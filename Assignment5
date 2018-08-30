@@ -1,0 +1,31 @@
+DELIMITER $$
+Create procedure CalculateFine(In cid int)
+BEGIN
+Declare p_date date;
+Declare fine_amt int;
+Declare diff int;
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT 'Table not found';
+SELECT DateofPayment into p_date from Customer1 where Cust_id=cid;
+SELECT DATEDIFF(CURDATE(), p_date) into diff;
+
+If (diff>=15 and diff<=30)then
+SET fine_amt=diff*5;
+insert into Fine values(cid,CURDATE(),fine_amt);
+elseif (diff>30) then
+SET fine_amt=diff*50;
+insert into fine values(cid,CURDATE(),fine_amt);
+End if;
+Update Customer1 set Status='P' where cust_id=cid;
+END;
+$$
+DELIMITER ;
+
+
+DELIMITER $$
+Create procedure InsertCustomer(In cid int, In nm varchar(20), In dop date, In nos varchar(30), in fstatus varchar(2))
+BEGIN
+INSERT INTO Customer1 values(cid,nm,dop,nos,fstatus);
+END;
+$$
+DELIMITER ;

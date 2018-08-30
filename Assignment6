@@ -1,0 +1,168 @@
+[TE2@localhost ~]$ su
+Password: 
+[root@localhost TE2]# /etc/init.d/oracle-xe restart
+Restarting oracle-xe (via systemctl):                      [  OK  ]
+[root@localhost TE2]# cd /u01/app/oracle/product/11.2.0/xe/bin
+[root@localhost bin]#  . ./oracle_env.sh
+[root@localhost bin]# sqlplus system
+
+SQL*Plus: Release 11.2.0.2.0 Production on Thu Jul 26 10:28:11 2018
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+Enter password: 
+
+Connected to:
+Oracle Database 11g Express Edition Release 11.2.0.2.0 - 64bit Production
+
+SQL> select * from Oemp;
+
+	ID NAME
+---------- ---------------
+	 1 ABC
+	 3 GHI
+	 5 MNO
+	 6 PQR
+	 7 STU
+
+SQL> select * from nemp;
+
+	ID NAME
+---------- ---------------
+	 1 ABC
+	 2 DEF
+	 3 GHI
+	 4 JKL
+
+SQL> declare
+    2  newcid int;
+    3  newname varchar(15);
+    4 oldcid int;
+    5 oldname varchar(15);
+    6  cursor oldcursor(n int) is select * from Oemp where id=n;
+    7 cursor newcursor is select * from Nemp;
+    8 begin
+    9 open newcursor;
+   10 loop
+   11 fetch newcursor into newcid,newname;
+   12 exit when newcursor%notfound;
+   13 open oldcursor(newcid);
+   14 fetch oldcursor into oldcid,oldname;
+   15 if oldcursor%notfound then
+   16 insert into Oemp values(newcid,newname);         
+   17 end if;
+   18 close oldcursor;
+   19 end loop;
+   20 close newcursor;
+   21 end;
+   22 /
+PL/SQL procedure successfully completed.
+
+SQL> select * from Oemp;
+
+	ID NAME
+---------- ---------------
+	 1 ABC
+	 3 GHI
+	 5 MNO
+	 6 PQR
+	 7 STU
+	 2 DEF
+	 4 JKL
+
+7 rows selected.
+
+ SQL> insert into Nemp values(8,'AAA');
+
+1 row created.
+
+SQL> select * from nemp;
+
+	ID NAME
+---------- ---------------
+	 1 ABC
+	 2 DEF
+	 3 GHI
+	 4 JKL
+	 8 AAA
+
+SQL> select * from oemp;
+
+	ID NAME
+---------- ---------------
+	 1 ABC
+	 3 GHI
+	 5 MNO
+	 6 PQR
+	 7 STU
+	 2 DEF
+	 4 JKL
+
+7 rows selected.
+
+SQL> declare
+    2  newcid int;
+    3  newname varchar(15);
+    4 oldcid int;
+    5 oldname varchar(15);
+    6  cursor oldcursor(n int) is select * from Oemp where id=n;
+    7 cursor newcursor is select * from Nemp;
+    8 begin
+    9 open newcursor;
+   10 loop
+   11 fetch newcursor into newcid,newname;
+   12 exit when newcursor%notfound;
+   13 open oldcursor(newcid);
+   14 fetch oldcursor into oldcid,oldname;
+   15 if oldcursor%notfound then
+   16 insert into Oemp values(newcid,newname);         
+   17 end if;
+   18 close oldcursor;
+   19 end loop;
+   20 close newcursor;
+   21 end;
+   22 /
+PL/SQL procedure successfully completed.
+
+
+SQL> select * from oemp;
+
+	ID NAME
+---------- ---------------
+	 1 ABC
+	 3 GHI
+	 5 MNO
+	 6 PQR
+	 7 STU
+	 2 DEF
+	 4 JKL
+	 8 AAA
+
+8 rows selected.
+
+SQL> create table Assign5cust(cust_id int,name varchar(15),DOP date,scheme varchar(15),status char(1));
+
+Table created.
+
+SQL> alter table Assign5cust add primary key(cust_id);
+
+Table altered.
+
+SQL> create table Assign5fine(cust_id int,Cdate date,amt int,primary key(cust_id,Cdate),foreign key(cust_id) references assign5cust(cust_id) on delete cascade);
+
+Table created.
+
+SQL> insert into assign5cust values(1,'ABC','12/04/2018','SILVER','N');
+
+1 row created.
+
+SQL> insert into assign5cust values(2,'DEF','21/04/2018','GOLD','N');
+
+1 row created.
+
+SQL> insert into assign5cust values(3,'GHI','18/06/2018','COPPER','P');
+
+1 row created.
+
+
+

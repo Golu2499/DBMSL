@@ -1,0 +1,276 @@
+MySQL [t3459db]> select * from Customer;
++---------+------------+------------+--------------+----------------+-------------+------------+
+| cust_no | cust_fname | cust_lname | cust_address | cust_company   | city        | phone      |
++---------+------------+------------+--------------+----------------+-------------+------------+
+|       1 | Pooja      | Tagunde    | Bibvewadi    | Mobicon        | Pune        | 8806742657 |
+|       2 | Parag      | Chauhan    | Malad east   | EQtechnologies | Mumbai      | 8055076002 |
+|       3 | Hemangi    | Poojari    | Nizamuddin   | HDFC           | Gurgaon     | 8090504030 |
+|       4 | Anisha     | Parwani    | Kothrud      | Softonic       | Hyderabad   | 9065748381 |
+|       5 | Manoj      | Shah       | Baner        | AXA            | Pune        | 9922203693 |
+|       6 | Mayur      | Raut       | MGROAD       | Avaya          | Bangalore   | 9284491390 |
+|       7 | Harshad    | Shinde     | Camp         | Unisoft        | Nashik      | 9284666789 |
+|       8 | Janvi      | Virkar     | Ram Ghat     | JPMorgan       | Delhi       | 9589779931 |
+|       9 | Asha       | Parwani    | Pimpri       | TATA           | Pune        | 9823776766 |
+|      10 | Nayan      | Gandhi     | Harneshwar   | Linkedon       | Gandhinagar | 9822356712 |
++---------+------------+------------+--------------+----------------+-------------+------------+
+10 rows in set (0.00 sec)
+
+MySQL [t3459db]> select * from orders;
++----------+---------+------+------+------------+
+| order_no | cust_no | qty  | ISBN | odate      |
++----------+---------+------+------+------------+
+|        1 |       2 |    1 |    2 | 2018-06-24 |
+|        3 |      10 |    1 |    3 | 2018-05-05 |
+|        4 |       7 |    1 |    1 | 2018-04-20 |
+|        5 |       3 |    1 |    4 | 2018-04-01 |
++----------+---------+------+------+------------+
+4 rows in set (0.00 sec)
+
+MySQL [t3459db]> select * from book;
++------+----------------------+------------+----------+-----------+--------------+
+| ISBN | title                | unit_price | pub_year | author_no | publisher_no |
++------+----------------------+------------+----------+-----------+--------------+
+|    1 | The Stars Shine Down |        525 |     2016 |         1 |            1 |
+|    2 | The Alchemist        |        315 |     2006 |         2 |            2 |
+|    3 | Revolution 2020      |        420 |     2008 |         3 |            3 |
+|    4 | Origin               |        630 |     2004 |         4 |            2 |
+|    5 | Harry Potter         |        378 |     2000 |         5 |            5 |
++------+----------------------+------------+----------+-----------+--------------+
+5 rows in set (0.00 sec)
+
+MySQL [t3459db]> select * from author;
++-----------+----------------+-----------+
+| author_no | author_name    | country   |
++-----------+----------------+-----------+
+|         1 | Sidney Sheldon | Australia |
+|         2 | Paulo Chloe    | America   |
+|         3 | Chetan Bhagat  | India     |
+|         4 | Dan Brown      | America   |
+|         5 | J.K.Rowling    | America   |
++-----------+----------------+-----------+
+5 rows in set (0.01 sec)
+
+MySQL [t3459db]> select * from publisher;
++--------------+----------------+----------------+------+
+| publisher_no | publisher_name | publisher_addr | year |
++--------------+----------------+----------------+------+
+|            1 | McGrawHills    | Australia      | 2016 |
+|            2 | Tink           | America        | 2004 |
+|            3 | logistic       | India          | 2005 |
+|            4 | Nirali         | India          | 2015 |
+|            5 | Redhood        | America        | 1999 |
++--------------+----------------+----------------+------+
+5 rows in set (0.00 sec)
+
+QUERY 1:
+MySQL [t3459db]> select c.cust_no,c.cust_fname,c.cust_lname,o.order_no,o.qty,o.ISBN,o.odate from Customer c NATURAL JOIN orders o;
++---------+------------+------------+----------+------+------+------------+
+| cust_no | cust_fname | cust_lname | order_no | qty  | ISBN | odate      |
++---------+------------+------------+----------+------+------+------------+
+|       2 | Parag      | Chauhan    |        1 |    1 |    2 | 2018-06-24 |
+|       6 | Mayur      | Raut       |        2 |    2 |    5 | 2018-06-01 |
+|      10 | Nayan      | Gandhi     |        3 |    1 |    3 | 2018-05-05 |
+|       7 | Harshad    | Shinde     |        4 |    1 |    1 | 2018-04-20 |
+|       3 | Hemangi    | Poojari    |        5 |    1 |    4 | 2018-04-01 |
+|       9 | Asha       | Parwani    |        6 |    1 |    3 | 2018-03-15 |
++---------+------------+------------+----------+------+------+------------+
+6 rows in set (0.00 sec)
+
+QUERY 2:
+MySQL [t3459db]> select b.title,a.author_name,a.country from book b inner join author a on a.author_no=b.author_no;
++----------------------+----------------+-----------+
+| title                | author_name    | country   |
++----------------------+----------------+-----------+
+| The Stars Shine Down | Sidney Sheldon | Australia |
+| The Alchemist        | Paulo Chloe    | America   |
+| Revolution 2020      | Chetan Bhagat  | India     |
+| Origin               | Dan Brown      | America   |
+| Harry Potter         | J.K.Rowling    | America   |
++----------------------+----------------+-----------+
+5 rows in set (0.00 sec)
+
+QUERY 3:
+MySQL [t3459db]> select Customer.cust_no,Customer.cust_fname,Customer.cust_lname from Customer left outer join orders on (Customer.cust_no=orders.cust_no) where orders.order_no is NULL;
++---------+------------+------------+
+| cust_no | cust_fname | cust_lname |
++---------+------------+------------+
+|       1 | Pooja      | Tagunde    |
+|       4 | Anisha     | Parwani    |
+|       5 | Manoj      | Shah       |
+|       8 | Janvi      | Virkar     |
++---------+------------+------------+
+4 rows in set (0.00 sec)
+
+QUERY 4:
+MySQL [t3459db]> select book.title,book.ISBN,orders.order_no from book left join orders on (book.ISBN=orders.ISBN) where orders.order_no is NULL;
++-------+------+----------+
+| title | ISBN | order_no |
++-------+------+----------+
+| MYSQL |    6 |     NULL |
++-------+------+----------+
+1 row in set (0.00 sec)
+
+QUERY 5:
+MySQL [t3459db]> select c.cust_fname,o.order_no,b.title,b.author_no,b.pub_year from orders o inner join Customer c on o.cust_no=c.cust_no inner join book b on o.ISBN=b.ISBN and b.ISBN=3;   
++------------+----------+-----------------+-----------+----------+
+| cust_fname | order_no | title           | author_no | pub_year |
++------------+----------+-----------------+-----------+----------+
+| Nayan      |        3 | Revolution 2020 |         3 |     2008 |
+| Asha       |        6 | Revolution 2020 |         3 |     2008 |
++------------+----------+-----------------+-----------+----------+
+2 rows in set (0.01 sec)
+
+QUERY 6:
+MySQL [t3459db]> select Customer.cust_fname,Customer.cust_no,count(orders.qty) from Customer inner join orders on Customer.cust_no=orders.cust_no group by Customer.cust_fname ; 
++------------+---------+-------------------+
+| cust_fname | cust_no | count(orders.qty) |
++------------+---------+-------------------+
+| Asha       |       9 |                 1 |
+| Harshad    |       7 |                 1 |
+| Hemangi    |       3 |                 1 |
+| Mayur      |       6 |                 2 |
+| Nayan      |      10 |                 2 |
+| Parag      |       2 |                 1 |
++------------+---------+-------------------+
+6 rows in set (0.00 sec)
+
+QUERY 7:
+MySQL [t3459db]> select o.order_no,o.cust_no,b.ISBN from orders o inner join book b on o.ISBN=b.ISBN and b.title="Harry Potter";
++----------+---------+------+
+| order_no | cust_no | ISBN |
++----------+---------+------+
+|        2 |       6 |    5 |
++----------+---------+------+
+1 row in set (0.00 sec)
+
+QUERY 8:
+MySQL [t3459db]> select Customer.cust_fname,Customer.cust_lname from Customer inner join orders on Customer.cust_no=orders.cust_no where YEAR(odate)="2017"; 
++------------+------------+
+| cust_fname | cust_lname |
++------------+------------+
+| Nayan      | Gandhi     |
+| Mayur      | Raut       |
++------------+------------+
+2 rows in set (0.01 sec)
+
+QUERY 9:
+MySQL [t3459db]> select * from details;
++------+----------------------+------------+--------------+-----------+----------------+-----------+
+| ISBN | title                | unit_price | publisher_no | author_no | author_name    | country   |
++------+----------------------+------------+--------------+-----------+----------------+-----------+
+|    1 | The Stars Shine Down |        525 |            1 |         1 | Sidney Sheldon | Australia |
+|    6 | MYSQL                |        650 |            2 |         1 | Sidney Sheldon | Australia |
+|    2 | The Alchemist        |        315 |            2 |         2 | Paulo Chloe    | America   |
+|    3 | Revolution 2020      |        420 |            3 |         3 | Chetan Bhagat  | India     |
+|    4 | Origin               |        630 |            2 |         4 | Dan Brown      | America   |
+|    5 | Harry Potter         |        378 |            5 |         5 | J.K.Rowling    | America   |
++------+----------------------+------------+--------------+-----------+----------------+-----------+
+6 rows in set (0.00 sec)
+
+QUERY 10:
+CREATE VIEW:
+MySQL [t3459db]> select * from show_customer;
++---------+------------+------------+
+| cust_no | cust_fname | cust_lname |
++---------+------------+------------+
+|       1 | Pooja      | Tagunde    |
+|       2 | Parag      | Chauhan    |
+|       3 | Hemangi    | Poojari    |
+|       4 | Anisha     | Parwani    |
+|       5 | Manoj      | Shah       |
+|       6 | Mayur      | Raut       |
+|       7 | Harshad    | Shinde     |
+|       8 | Janvi      | Virkar     |
+|       9 | Asha       | Parwani    |
+|      10 | Nayan      | Gandhi     |
++---------+------------+------------+
+10 rows in set (0.00 sec)
+
+INSERT INTO VIEW:
+MySQL [t3459db]> insert into show_customer(cust_fname,cust_lname) values('Tanvi','Shah');
+Query OK, 1 row affected (0.04 sec)
+
+MySQL [t3459db]> select * from show_customer;
++---------+------------+------------+
+| cust_no | cust_fname | cust_lname |
++---------+------------+------------+
+|       1 | Pooja      | Tagunde    |
+|       2 | Parag      | Chauhan    |
+|       3 | Hemangi    | Poojari    |
+|       4 | Anisha     | Parwani    |
+|       5 | Manoj      | Shah       |
+|       6 | Mayur      | Raut       |
+|       7 | Harshad    | Shinde     |
+|       8 | Janvi      | Virkar     |
+|       9 | Asha       | Parwani    |
+|      10 | Nayan      | Gandhi     |
+|      11 | Tanvi      | Shah       |
++---------+------------+------------+
+11 rows in set (0.00 sec)
+
+MySQL [t3459db]> select * from Customer;
++---------+------------+------------+--------------+----------------+-------------+------------+
+| cust_no | cust_fname | cust_lname | cust_address | cust_company   | city        | phone      |
++---------+------------+------------+--------------+----------------+-------------+------------+
+|       1 | Pooja      | Tagunde    | Bibvewadi    | Mobicon        | Pune        | 8806742657 |
+|       2 | Parag      | Chauhan    | Malad east   | EQtechnologies | Mumbai      | 8055076002 |
+|       3 | Hemangi    | Poojari    | Nizamuddin   | HDFC           | Gurgaon     | 8090504030 |
+|       4 | Anisha     | Parwani    | Kothrud      | Softonic       | Hyderabad   | 9065748381 |
+|       5 | Manoj      | Shah       | Baner        | AXA            | Pune        | 9922203693 |
+|       6 | Mayur      | Raut       | MGROAD       | Avaya          | Bangalore   | 9284491390 |
+|       7 | Harshad    | Shinde     | Camp         | Unisoft        | Nashik      | 9284666789 |
+|       8 | Janvi      | Virkar     | Ram Ghat     | JPMorgan       | Delhi       | 9589779931 |
+|       9 | Asha       | Parwani    | Pimpri       | TATA           | Pune        | 9823776766 |
+|      10 | Nayan      | Gandhi     | Harneshwar   | Linkedon       | Gandhinagar | 9822356712 |
+|      11 | Tanvi      | Shah       | NULL         | NULL           | NULL        | NULL       |
++---------+------------+------------+--------------+----------------+-------------+------------+
+11 rows in set (0.00 sec)
+
+DELETE FROM VIEW:
+MySQL [t3459db]> delete from show_customer where cust_no='11';
+Query OK, 1 row affected (0.03 sec)
+
+MySQL [t3459db]> select * from show_customer;
++---------+------------+------------+
+| cust_no | cust_fname | cust_lname |
++---------+------------+------------+
+|       1 | Pooja      | Tagunde    |
+|       2 | Parag      | Chauhan    |
+|       3 | Hemangi    | Poojari    |
+|       4 | Anisha     | Parwani    |
+|       5 | Manoj      | Shah       |
+|       6 | Mayur      | Raut       |
+|       7 | Harshad    | Shinde     |
+|       8 | Janvi      | Virkar     |
+|       9 | Asha       | Parwani    |
+|      10 | Nayan      | Gandhi     |
++---------+------------+------------+
+10 rows in set (0.00 sec)
+
+MySQL [t3459db]> select * from Customer;
++---------+------------+------------+--------------+----------------+-------------+------------+
+| cust_no | cust_fname | cust_lname | cust_address | cust_company   | city        | phone      |
++---------+------------+------------+--------------+----------------+-------------+------------+
+|       1 | Pooja      | Tagunde    | Bibvewadi    | Mobicon        | Pune        | 8806742657 |
+|       2 | Parag      | Chauhan    | Malad east   | EQtechnologies | Mumbai      | 8055076002 |
+|       3 | Hemangi    | Poojari    | Nizamuddin   | HDFC           | Gurgaon     | 8090504030 |
+|       4 | Anisha     | Parwani    | Kothrud      | Softonic       | Hyderabad   | 9065748381 |
+|       5 | Manoj      | Shah       | Baner        | AXA            | Pune        | 9922203693 |
+|       6 | Mayur      | Raut       | MGROAD       | Avaya          | Bangalore   | 9284491390 |
+|       7 | Harshad    | Shinde     | Camp         | Unisoft        | Nashik      | 9284666789 |
+|       8 | Janvi      | Virkar     | Ram Ghat     | JPMorgan       | Delhi       | 9589779931 |
+|       9 | Asha       | Parwani    | Pimpri       | TATA           | Pune        | 9823776766 |
+|      10 | Nayan      | Gandhi     | Harneshwar   | Linkedon       | Gandhinagar | 9822356712 |
++---------+------------+------------+--------------+----------------+-------------+------------+
+10 rows in set (0.00 sec)
+
+DROP VIEW:
+MySQL [t3459db]> drop view show_customer;
+Query OK, 0 rows affected (0.00 sec)
+
+MySQL [t3459db]> select * from show_customer;
+ERROR 1146 (42S02): Table 't3459db.show_customer' doesn't exist
+
+
+
+

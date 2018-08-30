@@ -1,0 +1,51 @@
+MySQL [t3459db]> create trigger TriggerOnStudents after update on student for each row insert into alumni values(OLD.NAME,OLD.DOADM,OLD.BRANCH,OLD.PERCENT,"PASS OUT");
+Query OK, 0 rows affected (0.09 sec)
+
+MySQL [t3459db]> create trigger TriggerOnStudents1 after delete on student for each row insert into alumni values(OLD.NAME,OLD.DOADM,OLD.BRANCH,OLD.PERCENT,"PASS OUT");
+Query OK, 0 rows affected (0.09 sec)
+
+MySQL [t3459db]>  insert into student values('3459','Tanvi','2016-08-01','COMP','90','PASS'),('3460','Shahrukh','2016-07-25','COMP','89','PASS'),('3461','Anjali','2017-07-28','COMP','88','PASS');
+Query OK, 3 rows affected (0.05 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+MySQL [t3459db]> select * from student;
++--------+----------+------------+--------+---------+--------+
+| ROLLNO | NAME     | DOADM      | BRANCH | PERCENT | STATUS |
++--------+----------+------------+--------+---------+--------+
+|   3459 | Tanvi    | 2016-08-01 | COMP   |      90 | PASS   |
+|   3460 | Shahrukh | 2016-07-25 | COMP   |      89 | PASS   |
+|   3461 | Anjali   | 2017-07-28 | COMP   |      88 | PASS   |
++--------+----------+------------+--------+---------+--------+
+3 rows in set (0.00 sec)
+
+MySQL [t3459db]> delete from student where ROLLNO='3459';
+Query OK, 1 row affected (0.03 sec)
+
+MySQL [t3459db]> update student set NAME='Dhwani',DOADM='2017-08-02',BRANCH='IT',PERCENT='87',STATUS='PASS' where ROLLNO=3460;
+Query OK, 1 row affected (0.05 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MySQL [t3459db]> select * from student;
++--------+--------+------------+--------+---------+--------+
+| ROLLNO | NAME   | DOADM      | BRANCH | PERCENT | STATUS |
++--------+--------+------------+--------+---------+--------+
+|   3460 | Dhwani | 2017-08-02 | IT     |      87 | PASS   |
+|   3461 | Anjali | 2017-07-28 | COMP   |      88 | PASS   |
++--------+--------+------------+--------+---------+--------+
+2 rows in set (0.00 sec)
+
+MySQL [t3459db]> select * from alumni;
++----------+------------+--------+---------+----------+
+| NAME     | DOADM      | BRANCH | PERCENT | STATUS   |
++----------+------------+--------+---------+----------+
+| Tanvi    | 2016-08-01 | COMP   |      90 | PASS OUT |
+| Shahrukh | 2016-07-25 | COMP   |      89 | PASS OUT |
++----------+------------+--------+---------+----------+
+2 rows in set (0.00 sec)
+
+
+
+
+
+
+
